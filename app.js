@@ -1,9 +1,5 @@
 // get cell from coordinates
-// row = Number
-// col = Number
-const getCell = (row, col) => {
-    return document.querySelector(`[data-coord="${row},${col}"]`);
-}
+const getCell = (row, column) => document.querySelector(`[data-coord="${row},${column}"]`);
 
 // get coordinate from cell element
 const getCoord = (element) => element.dataset.coord.split(",");
@@ -11,22 +7,43 @@ const getCoord = (element) => element.dataset.coord.split(",");
 // return cell with player1
 const getPlayer1 = () => document.querySelector('.player1');
 
-// cell = html element <td>
-// color = hex color, string, rgb
-const colorSquare = (cell, color) => {
-    cell.style.background = color;
+const setPlayer1 = (cell) => {
+    getPlayer1().classList.remove('player1');
+    cell.classList.add('player1');
 }
 
-//colorSquare(getCoor(4,4), 'red');
-const container = document.querySelector('.container');
+// cell = html element <td>
+const colorSquare = (cell, color) => cell.style.background = color;
 
-// check for free movement
-const surroundings = (coordinates) => {
+//// check for free movement
+// Todo refactor move functions
+const positionFree = (row,col) => getCell(row,col).classList.length < 1;
 
+// check up
+const moveUp = (coord) => {
+    const [row,col] = coord;
+    if(row-1 < 0){
+        return;
+    }else if(positionFree(row-1,col)){
+        const newPosition = getCell(row-1,col);
+        setPlayer1(newPosition);
+    }
+}
+
+// check up
+const moveDown = (coord) => {
+    const [row,col] = coord;
+    if(row+1 > 9){
+        return;
+    }else if(positionFree(row+1,col)){
+        const newPosition = getCell(row+1,col);
+        setPlayer1(newPosition);
+    }
 }
 
 // creates initial board
 const makeBoard = (rows,columns) => {
+    const container = document.querySelector('.container');
     const tr = () => document.createElement('tr');
     const tableCell = () => document.createElement('td');
 
@@ -42,15 +59,17 @@ const makeBoard = (rows,columns) => {
 // movement event listener
 document.addEventListener('keyup', (event) => {
 
-    const playerCoord = getCoord(getPlayer1());
-    console.log(playerCoord);
+    const playerPos = getCoord(getPlayer1());
+    //console.log(playerCoord);
 
     switch(event.key) {
         case 'ArrowUp':
+            moveUp(playerPos);
             break;
         case 'ArrowRight':
             break;
         case 'ArrowDown':
+            moveDown(playerPos);
             break;
         case 'ArrowLeft':
             break;
