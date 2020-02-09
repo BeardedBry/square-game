@@ -2,7 +2,7 @@
 const getCell = (row, column) => document.querySelector(`[data-coord="${row},${column}"]`);
 
 // get coordinate from cell element
-const getCoord = (element) => element.dataset.coord.split(",");
+const getCoord = (element) => strToNum(element.dataset.coord.split(","));
 
 // return cell with player1
 const getPlayer1 = () => document.querySelector('.player1');
@@ -19,6 +19,12 @@ const colorSquare = (cell, color) => cell.style.background = color;
 // Todo refactor move functions
 const positionFree = (row,col) => getCell(row,col).classList.length < 1;
 
+// check if position exists
+const posExists = (row, col) => getCell(row,col) !== null;
+
+// convert array of strings to numbers
+const strToNum = (arr) => arr.map((str) => parseInt(str,10));
+
 // check up
 const moveUp = (coord) => {
     const [row,col] = coord;
@@ -30,14 +36,22 @@ const moveUp = (coord) => {
     }
 }
 
-// check up
-const moveDown = (coord) => {
+
+// movement
+const move = (coord, direction) => {
     const [row,col] = coord;
-    if(row+1 > 9){
-        return;
-    }else if(positionFree(row+1,col)){
-        const newPosition = getCell(row+1,col);
-        setPlayer1(newPosition);
+
+    switch (direction) {
+        case 'down':
+            if(!posExists(row+1,col)){
+                return
+            }else if(positionFree(row+1,col)){
+                const newPosition = getCell(row+1,col);
+                setPlayer1(newPosition);
+            }
+        break;
+        default:
+            return;
     }
 }
 
@@ -69,7 +83,8 @@ document.addEventListener('keyup', (event) => {
         case 'ArrowRight':
             break;
         case 'ArrowDown':
-            moveDown(playerPos);
+            //console.log('down');
+            move(playerPos, 'down');
             break;
         case 'ArrowLeft':
             break;
