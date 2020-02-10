@@ -25,22 +25,9 @@ const posExists = (row, col) => getCell(row,col) !== null;
 // convert array of strings to numbers
 const strToNum = (arr) => arr.map((str) => parseInt(str,10));
 
-// check up
-const moveUp = (coord) => {
-    const [row,col] = coord;
-    if(row-1 < 0){
-        return;
-    }else if(positionFree(row-1,col)){
-        const newPosition = getCell(row-1,col);
-        setPlayer1(newPosition);
-    }
-}
-
-
 // movement
 const move = (coord, direction) => {
     const [row,col] = coord;
-
     switch (direction) {
         case 'down':
             if(!posExists(row+1,col)){
@@ -49,7 +36,31 @@ const move = (coord, direction) => {
                 const newPosition = getCell(row+1,col);
                 setPlayer1(newPosition);
             }
-        break;
+            break;
+        case 'right':
+            if(!posExists(row,col+1)){
+                return
+            }else if(positionFree(row,col+1)){
+                const newPosition = getCell(row,col+1);
+                setPlayer1(newPosition);
+            }
+            break;
+        case 'left':
+            if(col-1 < 0){
+                return;
+            }else if(positionFree(row,col-1)){
+                const newPosition = getCell(row,col-1);
+                setPlayer1(newPosition);
+            }
+            break;
+        case 'up':
+            if(row-1 < 0){
+                return;
+            }else if(positionFree(row-1,col)){
+                const newPosition = getCell(row-1,col);
+                setPlayer1(newPosition);
+            }
+            break;
         default:
             return;
     }
@@ -71,22 +82,23 @@ const makeBoard = (rows,columns) => {
 }
 
 // movement event listener
-document.addEventListener('keyup', (event) => {
+document.addEventListener('keydown', (event) => {
 
     const playerPos = getCoord(getPlayer1());
     //console.log(playerCoord);
 
     switch(event.key) {
         case 'ArrowUp':
-            moveUp(playerPos);
+            move(playerPos, 'up');
             break;
         case 'ArrowRight':
+            move(playerPos, 'right');
             break;
         case 'ArrowDown':
-            //console.log('down');
             move(playerPos, 'down');
             break;
         case 'ArrowLeft':
+            move(playerPos, 'left');
             break;
         default:
             return;
